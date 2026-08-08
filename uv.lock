@@ -8,16 +8,10 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "agent-platform",
     "agent-sdk",
     "google-calendar-agent",
     "platform-core",
 ]
-
-[[package]]
-name = "agent-platform"
-version = "0.1.0"
-source = { virtual = "." }
 
 [[package]]
 name = "agent-sdk"
@@ -536,6 +530,7 @@ name = "google-calendar-agent"
 version = "1.0.0"
 source = { editable = "google-calendar-agent" }
 dependencies = [
+    { name = "agent-sdk" },
     { name = "google-api-python-client" },
     { name = "google-auth" },
     { name = "google-auth-httplib2" },
@@ -551,6 +546,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "agent-sdk", editable = "agent-sdk" },
     { name = "google-api-python-client", specifier = ">=2.120" },
     { name = "google-auth", specifier = ">=2.30" },
     { name = "google-auth-httplib2", specifier = ">=0.2" },
@@ -766,6 +762,7 @@ name = "platform-core"
 version = "0.1.0"
 source = { editable = "platform-core" }
 dependencies = [
+    { name = "agent-sdk" },
     { name = "httpx" },
     { name = "pydantic" },
     { name = "pyyaml" },
@@ -785,6 +782,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "agent-sdk", editable = "agent-sdk" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "pydantic", specifier = ">=2.7,<3.0" },
     { name = "pyyaml", specifier = ">=6.0" },
