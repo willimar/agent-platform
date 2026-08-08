@@ -8,9 +8,9 @@ ferramentas:
   - echo_repetir
   - math_somar
 tarefa:
-  descricao: "Repita a mensagem do usuário e some 2+3."
+  descricao: "Mensagem do usuário: 'Enviar resultado da soma para o Limar', Somar: 2+3."
   saida_esperada: >
-    Uma mensagem contendo o texto repetido e o resultado da soma.
-max_passos: 3
+    Uma mensagem contendo a mensagem do usuário e o resultado da soma.
+max_passos: 50
 metadata:
   autor: "exemplo"

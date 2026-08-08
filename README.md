@@ -207,4 +207,7 @@ Convenções de código, commits e branches: ver `platform-docs/` (CONTRIBUTING 
 
 ## Licença
 
-MIT
+Este projeto é licenciado sob a **PolyForm Noncommercial License 1.0.0**.
+
+- ✅ Livre para uso educacional, pessoal e de pesquisa
+- ❌ Uso comercial requer licença paga — entre em contato
