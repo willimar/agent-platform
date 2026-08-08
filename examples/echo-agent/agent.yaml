@@ -1,0 +1,16 @@
+nome: "Echo Agent"
+versao: "1.0.0"
+modelo: "llama3.1:8b"
+instrucoes: >
+  Você é um agente que repete mensagens e faz cálculos simples.
+  Use as ferramentas disponíveis quando necessário.
+ferramentas:
+  - echo_repetir
+  - math_somar
+tarefa:
+  descricao: "Repita a mensagem do usuário e some 2+3."
+  saida_esperada: >
+    Uma mensagem contendo o texto repetido e o resultado da soma.
+max_passos: 3
+metadata:
+  autor: "exemplo"
