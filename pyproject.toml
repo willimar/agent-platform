@@ -1,0 +1,6 @@
+﻿[tool.uv.workspace]
+members = [
+    "agent-sdk",
+    "platform-core",
+    "google-calendar-agent",
+]
