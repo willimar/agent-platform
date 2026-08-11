@@ -1,8 +1,5 @@
 # agent-platform/setup.ps1
 # Uso: .\setup.ps1
-# Clona os repos irmãos (se necessário) e configura o workspace local.
-
-$ErrorActionPreference = "Stop"
 
 $repos = @{
     "platform-core"         = "https://github.com/willimar/platform-core.git"
@@ -11,21 +8,26 @@ $repos = @{
     "google-calendar-agent" = "https://github.com/willimar/google-calendar-agent.git"
 }
 
-# 1. Clona repos irmãos ao lado (não dentro)
 $root = Split-Path -Parent $PSScriptRoot
 Write-Host "Diretorio raiz: $root"
 
+# 1. Clona repos irmãos
 foreach ($name in $repos.Keys) {
     $path = Join-Path $root $name
     if (-not (Test-Path $path)) {
-        Write-Host "Clonando $name..."
-        git clone $repos[$name] $path
+        Write-Host "Clonando $name..." -ForegroundColor Cyan
+        $null = git clone $repos[$name] $path 2>&1
+        if (-not (Test-Path $path)) {
+            Write-Host "FALHA ao clonar $name" -ForegroundColor Red
+            exit 1
+        }
+        Write-Host "$name clonado com sucesso." -ForegroundColor Green
     } else {
-        Write-Host "$name ja existe."
+        Write-Host "$name ja existe." -ForegroundColor Yellow
     }
 }
 
-# 2. Cria pyproject.toml de workspace na raiz (para desenvolvimento)
+# 2. Cria pyproject.toml de workspace na raiz
 $workspaceToml = Join-Path $root "pyproject.toml"
 @"
 [tool.uv.workspace]
@@ -35,28 +37,41 @@ members = [
     "google-calendar-agent",
 ]
 "@ | Set-Content -Path $workspaceToml -Encoding UTF8
+Write-Host "Workspace criado em $workspaceToml" -ForegroundColor Green
 
-# 3. Para cada repo consumidor, injeta [tool.uv.sources] apontando pro path local
-function Add-LocalSource($repoPath) {
+# 3. Adiciona agent-sdk nas dependências e sources com workspace = true
+function Add-WorkspaceSource($repoPath) {
     $pyproject = Join-Path $repoPath "pyproject.toml"
+    if (-not (Test-Path $pyproject)) {
+        Write-Host "pyproject.toml nao encontrado em $repoPath" -ForegroundColor Red
+        return
+    }
+    
     $content = Get-Content $pyproject -Raw
     
     # Remove qualquer [tool.uv.sources] existente
     $content = $content -replace '(?s)\[tool\.uv\.sources\][^\[]*', ''
     
-    # Adiciona a fonte local
-    $content = $content.TrimEnd() + "`n`n[tool.uv.sources]`nagent-sdk = { path = `"../agent-sdk`", editable = true }`n"
+    # Adiciona agent-sdk nas dependências se não existir
+    if ($content -notmatch '"agent-sdk"') {
+        # Encontra a linha "dependencies = [" e adiciona antes do "]"
+        $content = $content -replace '(dependencies\s*=\s*\[)([^\]]*)', '$1$2  "agent-sdk",'
+    }
+    
+    # Adiciona [tool.uv.sources] com workspace = true
+    $content = $content.TrimEnd() + "`n`n[tool.uv.sources]`nagent-sdk = { workspace = true }`n"
     
     Set-Content -Path $pyproject -Value $content -Encoding UTF8
+    Write-Host "Sources de workspace injetadas em $pyproject" -ForegroundColor Green
 }
 
-Add-LocalSource (Join-Path $root "platform-core")
-Add-LocalSource (Join-Path $root "google-calendar-agent")
+Add-WorkspaceSource (Join-Path $root "platform-core")
+Add-WorkspaceSource (Join-Path $root "google-calendar-agent")
 
 # 4. Sync do workspace
-Write-Host "Sincronizando workspace..."
+Write-Host "`nSincronizando workspace..." -ForegroundColor Cyan
 Push-Location $root
 uv sync --group dev
 Pop-Location
 
-Write-Host "Setup completo."
+Write-Host "`nSetup completo!" -ForegroundColor Green
