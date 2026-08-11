@@ -27,16 +27,17 @@ foreach ($name in $repos.Keys) {
     }
 }
 
-# 2. Cria pyproject.toml de workspace na raiz
+# 2. Cria pyproject.toml de workspace na raiz (sem BOM)
 $workspaceToml = Join-Path $root "pyproject.toml"
-@"
+$workspaceContent = @"
 [tool.uv.workspace]
 members = [
     "agent-sdk",
     "platform-core",
     "google-calendar-agent",
 ]
-"@ | Set-Content -Path $workspaceToml -Encoding UTF8
+"@
+[System.IO.File]::WriteAllText($workspaceToml, $workspaceContent, [System.Text.UTF8Encoding]::new($false))
 Write-Host "Workspace criado em $workspaceToml" -ForegroundColor Green
 
 # 3. Adiciona agent-sdk nas dependências e sources com workspace = true
@@ -47,21 +48,26 @@ function Add-WorkspaceSource($repoPath) {
         return
     }
     
-    $content = Get-Content $pyproject -Raw
+    # Lê o arquivo removendo BOM se existir
+    $bytes = [System.IO.File]::ReadAllBytes($pyproject)
+    if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+        $bytes = $bytes[3..($bytes.Length - 1)]
+    }
+    $content = [System.Text.Encoding]::UTF8.GetString($bytes)
     
-    # Remove qualquer [tool.uv.sources] existente
-    $content = $content -replace '(?s)\[tool\.uv\.sources\][^\[]*', ''
+    # Remove qualquer [tool.uv.sources] existente (com regex multi-linha)
+    $content = $content -replace '(?s)\[tool\.uv\.sources\]\s*\r?\n(?:[^\[]*?\r?\n)*?(?=\r?\n\[|\z)', ''
     
     # Adiciona agent-sdk nas dependências se não existir
     if ($content -notmatch '"agent-sdk"') {
-        # Encontra a linha "dependencies = [" e adiciona antes do "]"
         $content = $content -replace '(dependencies\s*=\s*\[)([^\]]*)', '$1$2  "agent-sdk",'
     }
     
     # Adiciona [tool.uv.sources] com workspace = true
     $content = $content.TrimEnd() + "`n`n[tool.uv.sources]`nagent-sdk = { workspace = true }`n"
     
-    Set-Content -Path $pyproject -Value $content -Encoding UTF8
+    # Escreve SEM BOM
+    [System.IO.File]::WriteAllText($pyproject, $content, [System.Text.UTF8Encoding]::new($false))
     Write-Host "Sources de workspace injetadas em $pyproject" -ForegroundColor Green
 }
 
