@@ -40,7 +40,35 @@ members = [
 [System.IO.File]::WriteAllText($workspaceToml, $workspaceContent, [System.Text.UTF8Encoding]::new($false))
 Write-Host "Workspace criado em $workspaceToml" -ForegroundColor Green
 
-# 3. Adiciona agent-sdk nas dependências e sources com workspace = true
+# 3. Remove seção [tool.uv.sources] existente
+function Remove-ToolUvSources($content) {
+    $lines = $content -split "`r?`n"
+    $result = @()
+    $inSourcesSection = $false
+    
+    foreach ($line in $lines) {
+        # Detecta início de nova seção
+        if ($line -match '^\s*\[') {
+            if ($line -match '^\s*\[tool\.uv\.sources\]') {
+                $inSourcesSection = $true
+                continue
+            } else {
+                $inSourcesSection = $false
+            }
+        }
+        
+        # Pula linhas da seção [tool.uv.sources]
+        if ($inSourcesSection) {
+            continue
+        }
+        
+        $result += $line
+    }
+    
+    return $result -join "`n"
+}
+
+# 4. Adiciona agent-sdk nas dependências e sources com workspace = true
 function Add-WorkspaceSource($repoPath) {
     $pyproject = Join-Path $repoPath "pyproject.toml"
     if (-not (Test-Path $pyproject)) {
@@ -55,8 +83,8 @@ function Add-WorkspaceSource($repoPath) {
     }
     $content = [System.Text.Encoding]::UTF8.GetString($bytes)
     
-    # Remove qualquer [tool.uv.sources] existente (com regex multi-linha)
-    $content = $content -replace '(?s)\[tool\.uv\.sources\]\s*\r?\n(?:[^\[]*?\r?\n)*?(?=\r?\n\[|\z)', ''
+    # Remove [tool.uv.sources] existente
+    $content = Remove-ToolUvSources $content
     
     # Adiciona agent-sdk nas dependências se não existir
     if ($content -notmatch '"agent-sdk"') {
@@ -74,7 +102,7 @@ function Add-WorkspaceSource($repoPath) {
 Add-WorkspaceSource (Join-Path $root "platform-core")
 Add-WorkspaceSource (Join-Path $root "google-calendar-agent")
 
-# 4. Sync do workspace
+# 5. Sync do workspace
 Write-Host "`nSincronizando workspace..." -ForegroundColor Cyan
 Push-Location $root
 uv sync --group dev
