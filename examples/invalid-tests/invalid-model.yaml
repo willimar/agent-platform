@@ -1,0 +1,11 @@
+nome: "Teste Invalido"
+versao: "1.0.0"
+modelo: "modelo_que_nao_existe:7b"
+instrucoes: "Teste de validacao."
+ferramentas:
+  - echo_repetir
+tarefa:
+  descricao: "Teste."
+  saida_esperada: "Teste."
+max_passos: 3
+timeout_segundos: 30

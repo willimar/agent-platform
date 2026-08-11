@@ -1,0 +1,16 @@
+{"level": "info", "log_file": "logs\\platform.log", "event": "logging_configurado", "timestamp": "2026-08-11T22:05:15.041032Z"}
+{"level": "info", "log_file": "logs\\platform.log", "event": "logging_configurado", "timestamp": "2026-08-11T22:06:27.456818Z"}
+{"caminho": "F:\\agent-platform\\examples\\invalid-tests\\invalid-agent.yaml", "event": "carregando_agente", "level": "info", "timestamp": "2026-08-11T22:06:27.548158Z"}
+{"nome": "Teste Invalido", "versao": "1.0.0", "modelo": "modelo_que_nao_existe:7b", "ferramentas": ["echo_repetir"], "event": "agente_carregado", "level": "info", "timestamp": "2026-08-11T22:06:27.550689Z"}
+{"nome": "Teste Invalido", "modelo": "modelo_que_nao_existe:7b", "ferramentas": ["echo_repetir"], "event": "validando_agente", "level": "info", "timestamp": "2026-08-11T22:06:27.556891Z"}
+{"faltando": ["echo_repetir"], "event": "ferramentas_faltando", "level": "error", "timestamp": "2026-08-11T22:06:27.558399Z"}
+{"level": "info", "log_file": "logs\\platform.log", "event": "logging_configurado", "timestamp": "2026-08-11T22:06:50.683816Z"}
+{"caminho": "F:\\agent-platform\\examples\\invalid-tests\\invalid-agent.yaml", "event": "carregando_agente", "level": "info", "timestamp": "2026-08-11T22:06:50.770060Z"}
+{"nome": "Teste Invalido", "versao": "1.0.0", "modelo": "modelo_que_nao_existe:7b", "ferramentas": ["echo_repetir"], "event": "agente_carregado", "level": "info", "timestamp": "2026-08-11T22:06:50.771060Z"}
+{"nome": "Teste Invalido", "modelo": "modelo_que_nao_existe:7b", "ferramentas": ["echo_repetir"], "event": "validando_agente", "level": "info", "timestamp": "2026-08-11T22:06:50.776442Z"}
+{"faltando": ["echo_repetir"], "event": "ferramentas_faltando", "level": "error", "timestamp": "2026-08-11T22:06:50.776442Z"}
+{"level": "info", "log_file": "logs\\platform.log", "event": "logging_configurado", "timestamp": "2026-08-11T22:11:24.591161Z"}
+{"caminho": "F:\\agent-platform\\examples\\invalid-tests\\invalid-tool.yaml", "event": "carregando_agente", "level": "info", "timestamp": "2026-08-11T22:11:24.666238Z"}
+{"nome": "Teste Invalido", "versao": "1.0.0", "modelo": "llama3.1:8b", "ferramentas": ["echo_repetir"], "event": "agente_carregado", "level": "info", "timestamp": "2026-08-11T22:11:24.668268Z"}
+{"nome": "Teste Invalido", "modelo": "llama3.1:8b", "ferramentas": ["echo_repetir"], "event": "validando_agente", "level": "info", "timestamp": "2026-08-11T22:11:24.671405Z"}
+{"faltando": ["echo_repetir"], "event": "ferramentas_faltando", "level": "error", "timestamp": "2026-08-11T22:11:24.671405Z"}
