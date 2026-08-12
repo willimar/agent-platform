@@ -6,6 +6,7 @@ $repos = @{
     "agent-sdk"             = "https://github.com/willimar/agent-sdk.git"
     "platform-docs"         = "https://github.com/willimar/platform-docs.git"
     "google-calendar-agent" = "https://github.com/willimar/google-calendar-agent.git"
+    "youtube-publisher-agent" = "https://github.com/willimar/youtube-publisher-agent.git"
 }
 
 $root = Split-Path -Parent $PSScriptRoot
